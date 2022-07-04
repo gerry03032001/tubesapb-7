@@ -1,3 +1,7 @@
+
+
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'media.dart';
@@ -18,6 +22,7 @@ class _DetailState extends State<Detail> {
   List<Map<dynamic, dynamic>> data = [];
   List<String> dataKeys = [];
 
+  @override
   void initState() {
     super.initState();
     ref = FirebaseDatabase.instance.ref('place/' + widget.datakeys + '/review');
@@ -160,9 +165,9 @@ class _DetailState extends State<Detail> {
                   ),
               ),
               const SizedBox(height: 5),
-              Divider(color: Colors.black),
+              const Divider(color: Colors.black),
               Container(
-                padding: EdgeInsets.only(left: 25),
+                padding: const EdgeInsets.only(left: 25),
                 width: MediaQuery.of(context).size.width,
                 child: Text(
                   "Tanggapan & Ulasan",
@@ -170,76 +175,74 @@ class _DetailState extends State<Detail> {
                       fontSize: 20, fontWeight: FontWeight.w700),
                 ),
               ),
-              Divider(color: Colors.black),
+              const Divider(color: Colors.black),
               ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: data.length,
                   itemBuilder: (context, index) {
+                    
                     if (data[index]['textreview'] != '') {
                       int rate = data[index]['rating'];
                       double rating = rate.toDouble();
-                      return Container(
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 25),
-                            Container(
-                              padding: EdgeInsets.only(left: 25),
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    backgroundColor: Colors.black,
-                                    radius: 30,
-                                    backgroundImage: NetworkImage(
-                                        'https://firebasestorage.googleapis.com/v0/b/tubes-apb-120e9.appspot.com/o/' +
-                                            data[index]["imgprofile"]),
-                                  ),
-                                  const SizedBox(width: 15),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(data[index]['name'],
-                                          style: GoogleFonts.openSans(
-                                              fontWeight: FontWeight.w600)),
-                                      const SizedBox(height: 10),
-                                      RatingBarIndicator(
-                                        rating: rating,
-                                        itemSize: 18,
-                                        itemPadding:
-                                            EdgeInsets.symmetric(horizontal: 0),
-                                        itemBuilder: (context, _) => const Icon(
-                                          Icons.star,
-                                          color: Colors.amber,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
+                      return Column(
+                        children: [
+                          const SizedBox(height: 25),
+                          Container(
+                            padding: const EdgeInsets.only(left: 25),
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: Colors.black,
+                                  radius: 30,
+                                  backgroundImage: FileImage(
+                                    File(data[index]["imgprofile"])),
+                                ),
+                                const SizedBox(width: 15),
+                                Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    Text(data[index]['name'],
+                                        style: GoogleFonts.openSans(
+                                            fontWeight: FontWeight.w600)),
+                                    const SizedBox(height: 10),
+                                    RatingBarIndicator(
+                                      rating: rating,
+                                      itemSize: 18,
+                                      itemPadding:
+                                          const EdgeInsets.symmetric(horizontal: 0),
+                                      itemBuilder: (context, _) => const Icon(
+                                        Icons.star,
+                                        color: Colors.amber,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 25),
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              padding: EdgeInsets.only(
-                                  left: 25, right: 25, bottom: 25),
-                              child: Text(data[index]['textreview'],
-                                  style: GoogleFonts.tinos(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 18)),
+                          ),
+                          const SizedBox(height: 25),
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            padding: const EdgeInsets.only(
+                                left: 25, right: 25, bottom: 25),
+                            child: Text(data[index]['textreview'],
+                                style: GoogleFonts.tinos(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 18)),
+                          ),
+                          const SizedBox(
+                            width: 40,
+                            height: 25,
+                            child: Divider(
+                              color: Colors.black,
                             ),
-                            SizedBox(
-                              width: 40,
-                              height: 25,
-                              child: Divider(
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       );
                     } else {
-                      return SizedBox();
+                      return const SizedBox();
                     }
                   })
             ],
