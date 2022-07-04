@@ -27,14 +27,16 @@ class _Reviewstate extends State<Review> {
     if (snapshot.exists) {
       return users.fromJson(snapshot.data()!);
     }
+    return null;
   }
 
+  // ignore: non_constant_identifier_names
   String? Getuid() {
     if (user != null) {
       final uid = user?.uid;
       return uid;
     } else {
-      final uid = 'user?.uid;';
+      const uid = 'user?.uid;';
       return uid;
     }
   }
@@ -298,11 +300,11 @@ class _Reviewstate extends State<Review> {
                           future: readUser(Getuid().toString()),
                           builder: (context, snapshot) {
                             if (snapshot.hasError) {
-                              return Text('snapsot.');
+                              return const Text('snapsot.');
                             } else if (snapshot.hasData) {
                               final user = snapshot.data;
                               return user == null
-                                  ? Center(
+                                  ? const Center(
                                       child: Text('Not Have Account'),
                                     )
                                   : TextButton(
@@ -331,7 +333,7 @@ class _Reviewstate extends State<Review> {
                                       ),
                                     );
                             } else {
-                              return Center(
+                              return const Center(
                                 child: CircularProgressIndicator(),
                               );
                             }
@@ -344,7 +346,9 @@ class _Reviewstate extends State<Review> {
           )
         ]),
       ),
+      
     );
+
   }
 
   Widget buildUploadStatus(firebase_storage.UploadTask task) =>
@@ -358,7 +362,7 @@ class _Reviewstate extends State<Review> {
 
             return Text(
               '$percentage %',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             );
           } else {
             return Container();

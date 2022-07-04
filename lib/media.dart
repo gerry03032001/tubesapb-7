@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:full_screen_image_null_safe/full_screen_image_null_safe.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:photo_view/photo_view_gallery.dart';
 
 class Media extends StatefulWidget {
   const Media(this.detail, this.datakeys, {Key? key}) : super(key: key);
@@ -17,6 +15,7 @@ class _MediaState extends State<Media> {
   late DatabaseReference ref;
   List<Map<dynamic, dynamic>> data = [];
   List<String> dataKeys = [];
+  @override
   void initState() {
     super.initState();
     ref = FirebaseDatabase.instance.ref('place/' + widget.datakeys + '/review');
@@ -66,6 +65,6 @@ class _MediaState extends State<Media> {
                 );
               })
     );
-    ;
+    // ignore: empty_statements
   }
 }

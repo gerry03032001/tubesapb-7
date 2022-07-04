@@ -15,7 +15,8 @@ class DisplayImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Color.fromRGBO(64, 105, 225, 1);
+    // ignore: unnecessary_const
+    const color = const Color.fromRGBO(64, 105, 225, 1);
 
     return Center(
         child: Stack(children: [
@@ -31,14 +32,14 @@ class DisplayImage extends StatelessWidget {
   // Builds Profile Image
   Widget buildImage(Color color) {
     final image = imagePath.contains('')
-        ? NetworkImage(imagePath)
+        ? FileImage(File(imagePath))
         : FileImage(File(imagePath));
 
     return CircleAvatar(
       radius: 75,
       backgroundColor: color,
       child: CircleAvatar(
-        backgroundImage: image as ImageProvider,
+        backgroundImage: image,
         radius: 70,
       ),
     );

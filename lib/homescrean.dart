@@ -83,9 +83,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isChecked = false;
 
 
+    // ignore: unused_local_variable
     final urlname = url != null ? basename(url!.path) : 'No File Selected';
     return SafeArea(
       child: Scaffold(
@@ -246,7 +246,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             return Text(
               '$percentage %',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             );
           } else {
             return Container();

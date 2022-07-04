@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+// ignore: unused_import
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'displayimage.dart';
 import 'package:tubes_app_7/firebase_api.dart';
 import 'users.dart';
@@ -30,7 +30,7 @@ class _ProfileState extends State<Profile> {
 
             return Text(
               '$percentage %',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             );
           } else {
             return Container();
@@ -45,14 +45,16 @@ class _ProfileState extends State<Profile> {
     if (snapshot.exists) {
       return users.fromJson(snapshot.data()!);
     }
+    return null;
   }
 
+  // ignore: non_constant_identifier_names
   String? Getuid() {
     if (user != null) {
       final uid = user?.uid;
       return uid;
     } else {
-      final uid = 'user?.uid;';
+      const uid = 'user?.uid;';
       return uid;
     }
   }
@@ -106,22 +108,22 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    final urlname = url != null ? basename(url!.path) : 'No File Selected';
+    File? _photoes;
     return FutureBuilder<users?>(
         future: readUser(Getuid().toString()),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Text('snapsot.');
+            return const Text('snapsot.');
           } else if (snapshot.hasData) {
             final user = snapshot.data;
             return user == null
-                ? Center(
+                ? const Center(
                     child: Text('Not Have Account'),
                   )
                 : SafeArea(
                     child: Scaffold(
                     body: Padding(
-                      padding: EdgeInsets.only(top: 20),
+                      padding: const EdgeInsets.only(top: 20),
                       child: Column(
                         children: [
                           AppBar(
@@ -129,8 +131,9 @@ class _ProfileState extends State<Profile> {
                             elevation: 0,
                             toolbarHeight: 10,
                           ),
-                          Center(
-                              child: Padding(
+                          const Center(
+                              // ignore: unnecessary_const
+                              child: const Padding(
                                   padding: EdgeInsets.only(bottom: 20),
                                   child: Text(
                                     'Your Profile',
@@ -141,37 +144,41 @@ class _ProfileState extends State<Profile> {
                                     ),
                                   ))),
                           InkWell(
-                              onTap: () {
-                                showDialog(
+                              onTap: () async {
+                                await showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
                                     return StatefulBuilder(
                                         builder: (context, setState) {
                                       return SimpleDialog(
-                                        title: Center(
+                                        title: const Center(
                                             child: Text('Add Profile Picture')),
                                         children: [
                                           Column(
                                             children: [
-                                              _photo != null
-                                                  ? ClipRRect(
-                                                      child: Image.file(
-                                                        _photo!,
-                                                        fit: BoxFit.cover,
-                                                        height: 120,
-                                                        width: 120,
+                                              SizedBox(
+                                                child: _photoes != null
+                                                    ? ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20),
+                                                        child: Image.file(
+                                                          _photoes!,
+                                                          fit: BoxFit.cover,
+                                                          height: 200,
+                                                          width: 200,
+                                                        ),
+                                                      )
+                                                    : const SizedBox(
+                                                        height: 10.0,
                                                       ),
-                                                    )
-                                                  : const SizedBox(
-                                                      height: 10.0,
-                                                    ),
-                                                                                                                                            task != null
+                                              ),
+                                              task != null
                                                   ? buildUploadStatus(task!)
                                                   : Container(),
                                             ],
                                           ),
-
-                                          SizedBox(
+                                          const SizedBox(
                                             height: 10,
                                           ),
                                           Container(
@@ -184,28 +191,34 @@ class _ProfileState extends State<Profile> {
                                                 ElevatedButton(
                                                   child: const Text(
                                                       'Add Image From Galery'),
-                                                  onPressed: () {
-                                                    imgFromGallery();
-                                                    Navigator.of(context).pop();
+                                                  onPressed: () async {
+                                                    await imgFromGallery();
+
+                                                    setState(() {
+                                                      _photoes = _photo;
+                                                    });
                                                   },
                                                 ),
-                                                SizedBox(
+                                                const SizedBox(
                                                   height: 5,
                                                 ),
                                                 ElevatedButton(
                                                   child: const Text(
                                                       'Add Image From Camera'),
                                                   onPressed: () async {
-                                                    imgFromCamera();
-                                                    Navigator.of(context).pop();
+                                                    await imgFromCamera();
+                                                    setState(() {
+                                                      _photoes = _photo;
+                                                    });
                                                   },
                                                 ),
-                                                SizedBox(
+                                                const SizedBox(
                                                   height: 20,
                                                 ),
                                                 ElevatedButton(
                                                   child: const Text('Upload'),
-                                                  onPressed: () async {
+                                                  onPressed: () {
+                                                  
                                                     final docUser =
                                                         FirebaseFirestore
                                                             .instance
@@ -213,8 +226,9 @@ class _ProfileState extends State<Profile> {
                                                                 'userData')
                                                             .doc(Getuid()
                                                                 .toString());
-                                                    docUser.update(
-                                                        {'img': urlname});
+                                                    docUser.update({
+                                                      'img': _photoes!.path
+                                                    });
                                                     Navigator.of(context).pop();
                                                   },
                                                 ),
@@ -226,19 +240,18 @@ class _ProfileState extends State<Profile> {
                                     });
                                   },
                                 );
+                                setState(() {});
                               },
                               child: DisplayImage(
-                                imagePath:
-                                    'https://firebasestorage.googleapis.com/v0/b/tubes-apb-120e9.appspot.com/o/' +
-                                        user.img,
+                                imagePath: user.img,
                                 onPressed: () {},
                               )),
                           Padding(
-                              padding: EdgeInsets.only(bottom: 10),
+                              padding: const EdgeInsets.only(bottom: 10),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
+                                  const Text(
                                     'Name',
                                     style: TextStyle(
                                       fontSize: 15,
@@ -246,13 +259,13 @@ class _ProfileState extends State<Profile> {
                                       color: Colors.grey,
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 1,
                                   ),
                                   Container(
                                       width: 350,
                                       height: 40,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                           border: Border(
                                               bottom: BorderSide(
                                         color: Colors.grey,
@@ -262,7 +275,7 @@ class _ProfileState extends State<Profile> {
                                         Expanded(
                                             child: TextButton(
                                                 onPressed: () {},
-                                                child: Container(
+                                                child: SizedBox(
                                                   width: MediaQuery.of(context)
                                                       .size
                                                       .width,
@@ -270,13 +283,13 @@ class _ProfileState extends State<Profile> {
                                                     user.fname +
                                                         ' ' +
                                                         user.lname,
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                         fontSize: 16,
                                                         height: 1.4,
                                                         color: Colors.black),
                                                   ),
                                                 ))),
-                                        Icon(
+                                        const Icon(
                                           Icons.keyboard_arrow_right,
                                           color: Colors.grey,
                                           size: 40.0,
@@ -285,11 +298,11 @@ class _ProfileState extends State<Profile> {
                                 ],
                               )),
                           Padding(
-                              padding: EdgeInsets.only(bottom: 10),
+                              padding: const EdgeInsets.only(bottom: 10),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
+                                  const Text(
                                     'Email',
                                     style: TextStyle(
                                       fontSize: 15,
@@ -297,13 +310,13 @@ class _ProfileState extends State<Profile> {
                                       color: Colors.grey,
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 1,
                                   ),
                                   Container(
                                       width: 350,
                                       height: 40,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                           border: Border(
                                               bottom: BorderSide(
                                         color: Colors.grey,
@@ -313,19 +326,19 @@ class _ProfileState extends State<Profile> {
                                         Expanded(
                                             child: TextButton(
                                                 onPressed: () {},
-                                                child: Container(
+                                                child: SizedBox(
                                                   width: MediaQuery.of(context)
                                                       .size
                                                       .width,
                                                   child: Text(
                                                     user.email,
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                         fontSize: 16,
                                                         height: 1.4,
                                                         color: Colors.black),
                                                   ),
                                                 ))),
-                                        Icon(
+                                        const Icon(
                                           Icons.keyboard_arrow_right,
                                           color: Colors.grey,
                                           size: 40.0,
@@ -334,17 +347,17 @@ class _ProfileState extends State<Profile> {
                                 ],
                               )),
                           Padding(
-                              padding: EdgeInsets.only(bottom: 10),
+                              padding: const EdgeInsets.only(bottom: 10),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 1,
                                   ),
                                   Container(
                                       width: 350,
                                       height: 40,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                           border: Border(
                                               bottom: BorderSide(
                                         color: Colors.grey,
@@ -359,13 +372,13 @@ class _ProfileState extends State<Profile> {
                                                   Navigator.pushNamed(
                                                       context, '/login');
                                                 },
-                                                child: Text(
+                                                child: const Text(
                                                   'Logut',
                                                   style: TextStyle(
                                                       fontSize: 16,
                                                       height: 1.4),
                                                 ))),
-                                        Icon(
+                                        const Icon(
                                           Icons.keyboard_arrow_right,
                                           color: Colors.grey,
                                           size: 40.0,
@@ -378,7 +391,7 @@ class _ProfileState extends State<Profile> {
                     ),
                   ));
           } else {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
