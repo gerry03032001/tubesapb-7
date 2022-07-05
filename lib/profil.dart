@@ -193,7 +193,6 @@ class _ProfileState extends State<Profile> {
                                                       'Add Image From Galery'),
                                                   onPressed: () async {
                                                     await imgFromGallery();
-
                                                     setState(() {
                                                       _photoes = _photo;
                                                     });
@@ -226,9 +225,8 @@ class _ProfileState extends State<Profile> {
                                                                 'userData')
                                                             .doc(Getuid()
                                                                 .toString());
-                                                    docUser.update({
-                                                      'img': _photoes!.path
-                                                    });
+                                                    docUser
+                                                        .update({'img': url != null ? (url!.path) : 'No File Selected'});
                                                     Navigator.of(context).pop();
                                                   },
                                                 ),
@@ -243,7 +241,8 @@ class _ProfileState extends State<Profile> {
                                 setState(() {});
                               },
                               child: DisplayImage(
-                                imagePath: user.img,
+                                imagePath:
+                                    user.img,
                                 onPressed: () {},
                               )),
                           Padding(

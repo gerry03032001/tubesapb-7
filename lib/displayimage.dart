@@ -32,14 +32,14 @@ class DisplayImage extends StatelessWidget {
   // Builds Profile Image
   Widget buildImage(Color color) {
     final image = imagePath.contains('')
-        ? FileImage(File(imagePath))
+        ? NetworkImage(imagePath)
         : FileImage(File(imagePath));
 
     return CircleAvatar(
       radius: 75,
       backgroundColor: color,
       child: CircleAvatar(
-        backgroundImage: image,
+        backgroundImage: image as ImageProvider,
         radius: 70,
       ),
     );
