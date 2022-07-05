@@ -1,6 +1,5 @@
 
 
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -195,8 +194,8 @@ class _DetailState extends State<Detail> {
                                 CircleAvatar(
                                   backgroundColor: Colors.black,
                                   radius: 30,
-                                  backgroundImage: FileImage(
-                                    File(data[index]["imgprofile"])),
+                                  backgroundImage: NetworkImage(
+                                    data[index]["imgprofile"]),
                                 ),
                                 const SizedBox(width: 15),
                                 Column(
